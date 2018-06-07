@@ -2,6 +2,8 @@ package mc.grace.weatherpal.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 import mc.grace.weatherpal.db.City;
 import mc.grace.weatherpal.db.County;
 import mc.grace.weatherpal.db.Province;
+import mc.grace.weatherpal.gson.Weather;
 
 public class Utility {
 
@@ -78,5 +81,22 @@ public class Utility {
             }
         }
         return false;
+    }
+
+    /**
+     * 将返回的json数据解析成Weather实体类
+     */
+    public static Weather handleWeatherResponse(String response){
+        /**/
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            // 注意JSONArray 和 JsonArray区别
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
